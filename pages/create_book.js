@@ -2,6 +2,7 @@ let Book = require('../models/book');
 let Author = require('../models/author');
 let Genre = require('../models/genre');
 
+
 function getAuthor(family_name, first_name) {
   return Author.findOne({family_name: family_name, first_name: first_name});
 }
@@ -11,6 +12,7 @@ function getGenre(name) {
 }
 
 exports.new_book = async (res, family_name, first_name, genre_name, title) => {
+try{
   let author = await getAuthor(family_name, first_name).exec();
   let genre = await getGenre(genre_name).exec();
   let book = Book({
@@ -20,6 +22,10 @@ exports.new_book = async (res, family_name, first_name, genre_name, title) => {
     isbn: 'ISBN2022',
     genre: genre
   });
+
   await book.save();
-  res.send('Created new book : ' + book);
+  res.send('Created new book : ' + book);}
+  catch(err){
+    res.status(400).send("bad input")
+  }
 }
